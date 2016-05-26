@@ -34,20 +34,43 @@ public class MoveRandomiser {
             if(m.getGeneralValues().getPower() == 0)
                 continue;
             
-            double factor = Math.max(0.3, rng.nextGaussian()) + 0.2;
-            short power = (short) (rng.nextGaussian() * 750 + 50);
+            double factor = Math.max(0.3, getNextFactor()) + 0.2;
+            short power = (short) (rng.nextInt(400) + getNextFactor() * 350 + 50);
             int mp = (int) Math.min(power * factor / 3, 255);
+            
+            System.out.println(m.getName().getName().getContent() + " " + factor + " " + power + " " + mp);
             
             m.getGeneralValues().setPower(power);
             m.getGeneralValues().setMPUsage((byte) mp);
             
             m.getGeneralValues().setEffect(StatusEffect.valueOf((byte) rng.nextInt(5)));
             m.getGeneralValues().setEffectChance((byte) (rng.nextInt(25) + 5));
-            m.getGeneralValues().setBlockingFactor((byte) (50 + 50 * rng.nextGaussian()));
+            m.getGeneralValues().setBlockingFactor((byte) (50 + 50 * getNextFactor()));
         }
     }
     
-    public void randomiseLearningChances() {
+    //TODO check if it makes sense
+    private double getNextFactor() {
+        double value = 2 * rng.nextDouble() - 1;
         
+        return value * value;
+    }
+    
+    //TODO brains training
+    public void randomiseLearningChances() {
+        for(Move m : world.getMovesManager().getMoves())
+        {
+            if(m.getId() > 56)
+                continue;
+            
+            if(m.getGeneralValues().getPower() == 0)
+                continue;
+
+            byte chance = (byte) (rng.nextInt(40) + 10);
+            
+            m.getLearningChance().setFirstChance(chance);
+            m.getLearningChance().setSecondChance((chance -= rng.nextInt(chance / 4)));
+            m.getLearningChance().setThirdChance((chance -= rng.nextInt(chance / 4)));
+        }
     }
 }

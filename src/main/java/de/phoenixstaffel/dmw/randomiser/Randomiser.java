@@ -98,6 +98,10 @@ public class Randomiser extends Plugin {
         evolutions.randomiseStatsgains();
         evolutions.randomiseRequirements();
         System.out.println("Evolutions successfully randomised");
+        
         this.moves = new MoveRandomiser(getDigimonWorld(), new Random(random.nextLong()));
+        moves.randomiseValues();
+        moves.randomiseLearningChances();
+        System.out.println("Moves successfully randomised");
     }
 }
